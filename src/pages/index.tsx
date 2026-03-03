@@ -1,13 +1,26 @@
-import { useModal } from "../modals";
+import { useState } from "react";
+import {
+    ConfirmModal,
+    ErrorModal,
+    DataModal,
+} from "../modals";
+import type {
+    ConfirmModalConfig,
+    ErrorModalConfig,
+    DataModalConfig
+} from "../modals";
+
 import TriggerCard from "../components/TriggerCard";
 import SectionTitle from "../components/SectionTitle";
 
 export default function HomePage() {
-    const { openModal } = useModal();
+    const [confirmConfig, setConfirmConfig] = useState<ConfirmModalConfig | null>(null);
+    const [errorConfig, setErrorConfig] = useState<ErrorModalConfig | null>(null);
+    const [dataConfig, setDataConfig] = useState<DataModalConfig | null>(null);
 
     // ── Confirm Modal Examples ──────────────────────────────────────────
     function openDeleteConfirm() {
-        openModal({
+        setConfirmConfig({
             type: 'confirm',
             icon: '🗑️',
             title: 'Delete Item',
@@ -19,7 +32,7 @@ export default function HomePage() {
     }
 
     function openLogoutConfirm() {
-        openModal({
+        setConfirmConfig({
             type: 'confirm',
             icon: '👋',
             title: 'Log Out',
@@ -31,7 +44,7 @@ export default function HomePage() {
     }
 
     function openPublishConfirm() {
-        openModal({
+        setConfirmConfig({
             type: 'confirm',
             icon: '🚀',
             title: 'Publish Changes',
@@ -44,19 +57,19 @@ export default function HomePage() {
 
     // ── Error Modal Examples ────────────────────────────────────────────
     function openNetworkError() {
-        openModal({
+        setErrorConfig({
             type: 'error',
             title: 'Network Error',
             error: 'Failed to connect to the server. Please check your internet connection.',
             actions: [
                 { label: 'Retry', variant: 'danger', onClick: () => alert('Retrying...'), icon: '🔄' },
-                { label: 'Dismiss', variant: 'ghost', onClick: () => { } },
+                { label: 'Dismiss', variant: 'ghost', onClick: () => setErrorConfig(null) },
             ],
         });
     }
 
     function openValidationError() {
-        openModal({
+        setErrorConfig({
             type: 'error',
             title: 'Validation Failed',
             error: 'The form contains 3 errors. Please correct them before submitting.',
@@ -65,7 +78,7 @@ export default function HomePage() {
     }
 
     function openCriticalError() {
-        openModal({
+        setErrorConfig({
             type: 'error',
             title: 'Critical System Error',
             error: 'Unhandled exception: Cannot read properties of undefined (reading "map")',
@@ -79,7 +92,7 @@ export default function HomePage() {
 
     // ── Data Modal Examples ─────────────────────────────────────────────
     function openUserProfile() {
-        openModal({
+        setDataConfig({
             type: 'data',
             title: 'User Profile',
             subtitle: 'Registered account details',
@@ -93,13 +106,13 @@ export default function HomePage() {
             ],
             actions: [
                 { label: 'Edit Profile', variant: 'primary', onClick: () => alert('Edit!'), icon: '✏️' },
-                { label: 'Close', variant: 'ghost', onClick: () => { } },
+                { label: 'Close', variant: 'ghost', onClick: () => setDataConfig(null) },
             ],
         });
     }
 
     function openOrderDetails() {
-        openModal({
+        setDataConfig({
             type: 'data',
             title: 'Order #ORD-2847',
             subtitle: 'Purchase summary',
@@ -114,13 +127,13 @@ export default function HomePage() {
             ],
             actions: [
                 { label: 'Download Invoice', variant: 'success', onClick: () => alert('Downloading...'), icon: '📄' },
-                { label: 'Close', variant: 'ghost', onClick: () => { } },
+                { label: 'Close', variant: 'ghost', onClick: () => setDataConfig(null) },
             ],
         });
     }
 
     function openServerStats() {
-        openModal({
+        setDataConfig({
             type: 'data',
             title: 'Server Status',
             subtitle: 'Live system metrics',
@@ -134,7 +147,7 @@ export default function HomePage() {
             ],
             actions: [
                 { label: 'Restart Server', variant: 'warning', onClick: () => alert('Restarting...'), icon: '🔄' },
-                { label: 'Close', variant: 'ghost', onClick: () => { } },
+                { label: 'Close', variant: 'ghost', onClick: () => setDataConfig(null) },
             ],
         });
     }
@@ -250,6 +263,27 @@ export default function HomePage() {
                     Built with React + Vite + TypeScript + Tailwind CSS
                 </footer>
             </div>
+
+            {/* Render Modals */}
+            {confirmConfig && (
+                <ConfirmModal
+                    config={confirmConfig}
+                    onClose={() => setConfirmConfig(null)}
+                />
+            )}
+            {errorConfig && (
+                <ErrorModal
+                    config={errorConfig}
+                    onClose={() => setErrorConfig(null)}
+                />
+            )}
+            {dataConfig && (
+                <DataModal
+                    config={dataConfig}
+                    onClose={() => setDataConfig(null)}
+                />
+            )}
         </div>
     )
 }
+
